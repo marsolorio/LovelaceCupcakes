@@ -9,8 +9,9 @@ public class InsertionSort {
 
     public static void main(String[] args) {
         try {
+            // Pass the file path dynamically
             Gson gson = new Gson();
-            FileReader reader = new FileReader("src/main/java/com/lovelacecupcakes/cupcake_3906.json");
+            FileReader reader = new FileReader(args[0]);
             JsonArray cupcakes = gson.fromJson(reader, JsonArray.class);
 
             // Insertion sort algorithm
@@ -26,11 +27,16 @@ public class InsertionSort {
                 cupcakes.set(j + 1, key);
             }
 
-            // Print sorted cupcakes
+            // Print sorted cupcakes (including details)
+            System.out.println("Sorted cupcakes:");
             for (int i = 0; i < cupcakes.size(); i++) {
-                System.out.println(cupcakes.get(i).getAsJsonObject().get("name").getAsString());
+                JsonObject cupcake = cupcakes.get(i).getAsJsonObject();
+                System.out.println("Name: " + cupcake.get("name").getAsString() +
+                        ", Price: " + cupcake.get("price").getAsDouble() +
+                        ", Frosting: " + cupcake.get("frosting").getAsJsonArray().toString());
             }
         } catch (Exception e) {
+            System.out.println("Error reading or parsing the JSON file.");
             e.printStackTrace();
         }
     }
