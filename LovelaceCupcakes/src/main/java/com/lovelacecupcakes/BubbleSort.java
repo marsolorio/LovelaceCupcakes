@@ -1,81 +1,38 @@
-package com.sort;
+package com.lovelacecupcakes;
 
-import org.json.simple.*;
+import java.io.FileReader;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class BubbleSort {
 
-  private static int count = 0;
-
   public static void main(String[] args) {
-    String fileName =
-      "/Users/jerom/Documents/GitHub/class-java/sort/demo/src/main/java/com/sort/cupcake_3906.json";
-    // String fileName =
-    //   "/Users/jerom/Documents/GitHub/class-java/sort/demo/src/main/java/com/sort/cupcake_10.json";
+    try {
+      Gson gson = new Gson();
+      FileReader reader = new FileReader("src/main/java/com/lovelacecupcakes/cupcake_3906.json");
+      JsonArray cupcakes = gson.fromJson(reader, JsonArray.class);
 
-    // read cupcake names
-    JSONArray cupcakeArray = JSONFile.readArray(fileName);
-    String[] cupcakeNameArray = nameArray(cupcakeArray);
-    System.out.println(cupcakeNameArray);
+      // Bubble sort algorithm
+      for (int i = 0; i < cupcakes.size() - 1; i++) {
+        for (int j = 0; j < cupcakes.size() - i - 1; j++) {
+          JsonObject cupcake1 = cupcakes.get(j).getAsJsonObject();
+          JsonObject cupcake2 = cupcakes.get(j + 1).getAsJsonObject();
 
-    // print unsorted list
-    System.out.println("----- Unsorted array -----");
-    print(cupcakeNameArray);
-
-    // sort
-    bubbleSort(cupcakeNameArray);
-
-    // print sorted list
-    System.out.println("----- Sorted array----- ");
-    print(cupcakeNameArray);
-
-    // print statistics
-    System.out.println("----- Statistics -----");
-    System.out.printf("Size of array = %d\n", cupcakeNameArray.length);
-    System.out.printf("Count = %d\n", count);
-  }
-
-  // print cupcake array
-  public static void print(String[] cupcakeNameArray) {
-    System.out.printf("Number\tName\n");
-    System.out.printf("------\t---------------\n");
-    for (int i = 0; i < cupcakeNameArray.length; i++) {
-      System.out.printf("%04d\t%s\n", i, cupcakeNameArray[i]);
-    }
-  }
-
-  // get array of cupcake names
-  public static String[] nameArray(JSONArray cupcakeArray) {
-    String[] arr = new String[cupcakeArray.size()];
-
-    // get names from json object
-    for (int i = 0; i < cupcakeArray.size(); i++) {
-      JSONObject o = (JSONObject) cupcakeArray.get(i);
-      String name = (String) o.get("name");
-      arr[i] = name;
-    }
-    return arr;
-  }
-
-  // bubble sort array, O(n^2), unoptimized brute force solution
-  public static void bubbleSort(String[] arr) {
-    for (int i = 0; i < arr.length; i++) {
-      for (int j = 0; j < arr.length; j++) {
-        if (j + 1 < arr.length) {
-          if (arr[j].compareTo(arr[j + 1]) > 0) {
-            swap(arr, j, j + 1);
+          if (cupcake1.get("name").getAsString().compareTo(cupcake2.get("name").getAsString()) > 0) {
+            // Swap
+            cupcakes.set(j, cupcake2);
+            cupcakes.set(j + 1, cupcake1);
           }
         }
-        // increase count
-        count++;
       }
-    }
-  }
 
-  // swap
-  public static void swap(String[] arr, int a, int b) {
-    String temp;
-    temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
+      // Print sorted cupcakes
+      for (int i = 0; i < cupcakes.size(); i++) {
+        System.out.println(cupcakes.get(i).getAsJsonObject().get("name").getAsString());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
